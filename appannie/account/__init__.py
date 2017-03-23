@@ -52,7 +52,7 @@ class Account(object):
         data = format_request_data(**kwargs)
         return self.paginator.make(uri, data, 'sales_list')
 
-    def product(self, product_id=None):
+    def app(self, product_id=None):
         self._validate_account_id()
         return Product(self.http_client, self.paginator, self.account_id,
                        product_id)

@@ -69,12 +69,12 @@ api.account(382823).sales()
 ## Account products calls:
 
 ```python
-api.account(382823).product().all()  # the product list is paginated
-api.account(382823).product(922103212).page(1)
-api.account(382823).product(922103212).iaps()
-api.account(382823).product(922103212).sales(union_key='sales_list')  # special parameter union_key
-api.account(382823).product(922103212).usage('2017-03-03', '2017-03-23')
-api.account(382823).product(922103212).metrics()
+api.account(382823).app().all()  # the apps are paginated
+api.account(382823).app(922103212).page(1)
+api.account(382823).app(922103212).iaps()
+api.account(382823).app(922103212).sales(union_key='sales_list')  # special parameter union_key
+api.account(382823).app(922103212).usage('2017-03-03', '2017-03-23')
+api.account(382823).app(922103212).metrics()
 ```
 
 ## Intelligence API calls:
