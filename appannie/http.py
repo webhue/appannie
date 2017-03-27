@@ -16,7 +16,9 @@ class HttpClient(object):
     def get_url(self, uri, data={}):
         url = self.ENDPOINT + uri
         if data:
-            url = url + '?' + urllib.urlencode(data)
+            # urlencode parameters deterministically:
+            sorted_values = sorted(data.items(), key=lambda val: val[0])
+            url = url + '?' + urllib.urlencode(sorted_values)
         return url
 
     def _get_default_headers(self):
@@ -35,7 +37,7 @@ class HttpClient(object):
                 raise self.get_exception_from_response(response)
             return response
         except requests.exceptions.RequestException as e:
-            raise  AppAnnieException(e.message)
+            raise AppAnnieException(e.message)
         except ValueError:
             raise AppAnnieException("Empty data returned by AppAnnie.")
 

@@ -34,11 +34,11 @@ def list_to_str(thelist, joinstr='+'):
 def format_request_data(**kwargs):
     data = {k: v for k, v in kwargs.iteritems() if v is not None}
     if data.get('date'):
-        data['date'] = to_day(data['date'])
+        data['date'] = str(to_day(data['date']))
     if data.get('start_date'):
-        data['start_date'] = to_day(data['start_date'])
+        data['start_date'] = str(to_day(data['start_date']))
     if data.get('end_date'):
-        data['end_date'] = to_day(data['end_date'])
+        data['end_date'] = str(to_day(data['end_date']))
     if data.get('countries'):
         data['countries'] = list_to_str(data['countries']).upper()
     if data.get('categories'):

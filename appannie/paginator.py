@@ -35,7 +35,7 @@ class Paginator(object):
             page_result = self.http_client.request(self.uri, data)
             page_num = page_result.get('page_num')
             if page_num is None:
-                break
+                return page_result.get(self.union_key, [])
             page_index = page_result.get('page_index') + 1
             page_result = page_result.get(self.union_key, [])
             union_result.extend(page_result)

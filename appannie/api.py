@@ -6,7 +6,6 @@ from .paginator import PaginatorFactory
 from .metadata import Metadata
 from .account import Account
 from .store import Store
-from .aso import AppStoreOptimization
 from .intelligence import Intelligence
 
 
