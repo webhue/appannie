@@ -2,7 +2,8 @@ from __future__ import absolute_import
 
 import unittest2
 import requests
-import mock
+
+from mock import patch
 
 from appannie.paginator import Paginator
 from appannie.http import HttpClient
@@ -13,11 +14,11 @@ class TestPaginator(unittest2.TestCase):
     URI = '/some/uri'
     UNION_KEY = 'unionkey'
 
-    def _get_union_result(self, responses):
-        with mock.patch.object(HttpClient, 'request') as mock_request:
-            mock_request.side_effect = responses
-            client = HttpClient(self.API_KEY)
-            paginator = Paginator(client, self.URI, union_key=self.UNION_KEY)
+    @patch.object(HttpClient, 'request')
+    def _get_union_result(self, responses, mock_request):
+        mock_request.side_effect = responses
+        client = HttpClient(self.API_KEY)
+        paginator = Paginator(client, self.URI, union_key=self.UNION_KEY)
         return paginator.all()
 
     def test_union(self):
