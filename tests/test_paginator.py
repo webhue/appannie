@@ -19,7 +19,25 @@ class TestPaginator(unittest2.TestCase):
         mock_request.side_effect = responses
         client = HttpClient(self.API_KEY)
         paginator = Paginator(client, self.URI, union_key=self.UNION_KEY)
-        return paginator.all()
+        return paginator.all(), mock_request
+
+    def _generate_response(self, rangestart=1, rangeend=3,
+                           union_key=UNION_KEY, code=200, page_index=0,
+                           **kwargs):
+        listresult = []
+        for index in range(rangestart, rangeend):
+            strindex = str(index)
+            listresult.append({
+                'param' + strindex: 'val' + strindex,
+                'otherparam' + strindex: 'otherval' + strindex,
+            })
+        response = {
+            'code': code,
+            'page_index': page_index,
+            union_key: listresult
+        }
+        response.update(kwargs)
+        return response
 
     def test_union(self):
         # missing union key parameter error:
@@ -28,19 +46,49 @@ class TestPaginator(unittest2.TestCase):
         with self.assertRaises(ValueError):
             paginator.all()
 
-        # missing union key in response:
+        # invalid/missing union key in response:
         responses = [
-            {'code': 200,
-             self.UNION_KEY: [{'param:': 'vals'}, {'param2': 'vals2'}]},
-            {'code': 200,
-             self.UNION_KEY + 'other': [{'param3:': 'vals3'}, {'param4': 'vals4'}]},
+            self._generate_response(1, 2, page_num=2, page_index=0),
+            self._generate_response(3, 6, page_num=2, page_index=1,
+                                    union_key=self.UNION_KEY + 'other'),
         ]
-        expected_result = [{'param:': 'vals'}, {'param2': 'vals2'}]
-        result = self._get_union_result(responses)
+        expected_result = self._generate_response(1, 2).get(self.UNION_KEY)
+        result, mock_request = self._get_union_result(responses)
         self.assertEqual(result, expected_result)
 
-        # TODO: check when no pages in result
-        # TODO: check when a single page exists???
-        # TODO: check the case when page_num is not returned
-        # TODO: check when empty result
-        # TODO: check the actual union (when everything is fine, and multiple pages)
+        # no pages in result:
+        responses = [
+            self._generate_response(1, 1, page_num=1),
+        ]
+        result, mock_request = self._get_union_result(responses)
+        self.assertEqual(result, [])
+
+        # page_num is not returned:
+        responses = [
+            self._generate_response(1, 1),
+        ]
+        result, mock_request = self._get_union_result(responses)
+        self.assertEqual(result, [])
+
+        # single page response:
+        page_response = self._generate_response(1, 2, page_num=1)
+        expected_result = page_response.get(self.UNION_KEY)
+        result, mock_request = self._get_union_result([page_response])
+        self.assertEqual(result, expected_result)
+
+        # general case:
+        page_num = 3
+        responses = []
+        for page_index in range(0, page_num):
+            # making param names consecutive we can generate the expected
+            # result easier
+            response = self._generate_response(1, 3, page_num=page_num,
+                                               page_index=page_index)
+            responses.append(response)
+
+        expected_result = self._generate_response(1, 3).get(self.UNION_KEY)
+        expected_result = expected_result * page_num
+
+        result, mock_request = self._get_union_result(responses)
+        self.assertEqual(result, expected_result)
+        self.assertEqual(mock_request.call_count, page_num)
