@@ -39,7 +39,7 @@ class Product(object):
     def sales(self, union_key='sales_list', **kwargs):
         uri = self._format_product_uri(self.SALES_ENDPOINT)
         data = format_request_data(**kwargs)
-        return self.paginator.make(uri, union_key=union_key)
+        return self.paginator.make(uri, data=data, union_key=union_key)
 
     def usage(self, start_date, end_date, data_source='itc', **kwargs):
         data = format_request_data(start_date=start_date, end_date=end_date,
