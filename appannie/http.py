@@ -1,5 +1,5 @@
 import requests
-import urllib
+from six.moves.urllib.parse import urlencode
 
 from .exception import (AppAnnieException, AppAnnieBadRequestException,
                         AppAnnieNotFoundException,
@@ -13,12 +13,12 @@ class HttpClient(object):
     def __init__(self, api_key):
         self.api_key = api_key
 
-    def get_url(self, uri, data={}):
+    def get_url(self, uri, data=None):
         url = self.ENDPOINT + uri
         if data:
             # urlencode parameters deterministically:
             sorted_values = sorted(data.items(), key=lambda val: val[0])
-            url = url + '?' + urllib.urlencode(sorted_values)
+            url = url + '?' + urlencode(sorted_values)
         return url
 
     def _get_default_headers(self):
@@ -27,7 +27,7 @@ class HttpClient(object):
             'Accept': 'application/json',
         }
 
-    def request(self, uri, data={}):
+    def request(self, uri, data=None):
         url = self.get_url(uri, data)
         headers = self._get_default_headers()
 

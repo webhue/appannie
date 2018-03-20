@@ -1,6 +1,6 @@
 import datetime
-
-
+from past.builtins import basestring
+from six import iteritems
 DATE_FORMAT = '%Y-%m-%d'
 DATETIME_FORMAT = '%Y-%m-%d %H:%M:%S'
 
@@ -32,7 +32,7 @@ def list_to_str(thelist, joinstr='+'):
 
 
 def format_request_data(**kwargs):
-    data = {k: v for k, v in kwargs.iteritems() if v is not None}
+    data = {k: v for k, v in iteritems(kwargs) if v is not None}
     if data.get('date'):
         data['date'] = str(to_day(data['date']))
     if data.get('start_date'):
