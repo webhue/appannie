@@ -1,3 +1,5 @@
 requests==2.3.0
 nose2
 mock
+six
+future

@@ -1,15 +1,17 @@
 from __future__ import absolute_import
 
-import unittest2
-import requests
+import unittest
 
-from mock import patch
+try:
+    from unittest.mock import patch
+except ImportError:
+    from mock import patch
 
 from appannie.paginator import Paginator
 from appannie.http import HttpClient
 
 
-class TestPaginator(unittest2.TestCase):
+class TestPaginator(unittest.TestCase):
     API_KEY = 'api key'
     URI = '/some/uri'
     UNION_KEY = 'unionkey'

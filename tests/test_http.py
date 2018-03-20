@@ -1,6 +1,6 @@
 from __future__ import absolute_import
 
-import unittest2
+import unittest
 import requests
 import mock
 
@@ -9,7 +9,7 @@ from appannie.exception import (AppAnnieException, AppAnnieRateLimitException,
                                 AppAnnieNotFoundException)
 
 
-class TestHttp(unittest2.TestCase):
+class TestHttp(unittest.TestCase):
     API_KEY = 'dummy'
     client = HttpClient(API_KEY)
 
@@ -52,7 +52,7 @@ class TestHttp(unittest2.TestCase):
         exception = self.client.get_exception_from_response({'error': msg,
                                                              'code': code})
         self.assertTrue(issubclass(exception.__class__, AppAnnieException))
-        self.assertEqual(exception.message, msg)
+        self.assertEqual(str(exception), msg)
         self.assertEqual(exception.ERROR_CODE, AppAnnieException.ERROR_CODE)
 
         # general case for known code:
@@ -60,7 +60,7 @@ class TestHttp(unittest2.TestCase):
         exception = self.client.get_exception_from_response({'error': msg,
                                                              'code': code})
         self.assertTrue(isinstance(exception, AppAnnieRateLimitException))
-        self.assertEqual(exception.message, msg)
+        self.assertEqual(str(exception), msg)
         self.assertEqual(exception.ERROR_CODE, code)
 
         # some 'not found' exceptions:

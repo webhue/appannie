@@ -2,19 +2,24 @@ class PaginatorFactory(object):
     def __init__(self, http_client):
         self.http_client = http_client
 
-    def make(self, uri, data={}, union_key=None):
+    def make(self, uri, data=None, union_key=None):
         return Paginator(self.http_client, uri, data, union_key)
 
 
 class Paginator(object):
-    def __init__(self, http_client, uri, data={}, union_key=None):
+    def __init__(self, http_client, uri, data=None, union_key=None):
         self.http_client = http_client
         self.union_key = union_key
         self.uri = uri
+        if data is None:
+            data = {}
         self.data = data
 
     def page(self, page=1):
-        data = self.data.copy()
+        if self.data:
+            data = dict(self.data)
+        else:
+            data = self.data
         data['page_index'] = page - 1
 
         return self.http_client.request(self.uri, data)
@@ -25,7 +30,10 @@ class Paginator(object):
 
         union_result = []
 
-        data = self.data.copy()
+        if self.data:
+            data = dict(self.data)
+        else:
+            data = self.data
 
         page_num = 1
         page_index = 0

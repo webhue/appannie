@@ -1,6 +1,3 @@
-import requests
-import json
-
 from .http import HttpClient
 from .paginator import PaginatorFactory
 from .metadata import Metadata
