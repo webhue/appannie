@@ -1,4 +1,4 @@
-requests==2.3.0
+requests==2.20.0
 nose2
 mock
 six
